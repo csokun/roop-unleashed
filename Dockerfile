@@ -1,19 +1,34 @@
-FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
+FROM nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04
 
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 ENV DEBIAN_FRONTEND noninteractive
+ENV PYTHON_VERSION=3.9.19
+ENV LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 
-RUN apt-get update -y && \
-  apt-get install -y ffmpeg curl libgl1 libglib2.0-0 python3-pip python-is-python3 git && \
-  apt-get clean && \
+RUN apt-get update && apt-get upgrade -y
+
+RUN apt-get install -y curl gnupg unixodbc-dev git \
+  ca-certificates build-essential \
+  zlib1g-dev libncurses5-dev libgdbm-dev libssl-dev libreadline-dev libffi-dev wget libbz2-dev libsqlite3-dev \
+  ffmpeg && \
+  update-ca-certificates && \
   rm -rf /var/lib/apt/lists/*
+
+RUN mkdir /python && cd /python && \
+  wget https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tgz && \
+  tar -zxvf Python-$PYTHON_VERSION.tgz && cd Python-$PYTHON_VERSION && \
+  ./configure --enable-optimizations && \
+  make install && rm -rf /python
 
 WORKDIR /app
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip3 install -r requirements.txt
+# RUN pip3 install --upgrade onnx protobuf
 
 COPY . .
 
 EXPOSE 7860
 
-CMD ["python", "run.py"]
+CMD ["python3", "run.py"]
