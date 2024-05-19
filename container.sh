@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
 IMAGE_TAG=roop-unleashed:latest
-docker buildx build --platform linux/amd64,linux/arm64 -t $IMAGE_TAG .
+NAME=roop-unleashed
 
-docker run --rm --runtime=nvidia --gpus all \
+docker buildx build -t $IMAGE_TAG .
+
+docker rm $NAME
+docker run --runtime=nvidia --gpus all \
+    --name $NAME \
     --restart unless-stopped \
     --detach \
     -p 7860:7860 \
     -v $PWD/models:/app/models \
-    -v $PWD/output:/app/output \
     -v $PWD/config.yaml:/app/config.yaml \
     $IMAGE_TAG
