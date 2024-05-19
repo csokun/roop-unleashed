@@ -1,11 +1,11 @@
-FROM nvidia/cuda:11.8.0-base-ubuntu22.04
+FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
 
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update -y && \
-	apt-get install -y ffmpeg curl libgl1 libglib2.0-0 python3-pip python-is-python3 git && \
-	apt-get clean && \
-	rm -rf /var/lib/apt/lists/*
+  apt-get install -y ffmpeg curl libgl1 libglib2.0-0 python3-pip python-is-python3 git && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -16,4 +16,4 @@ COPY . .
 
 EXPOSE 7860
 
-CMD ["python3", "run.py"]
+CMD ["python", "run.py"]
