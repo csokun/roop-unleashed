@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04
+FROM nvidia/cuda:12.4.1-cudnn-runtime-ubuntu22.04
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -11,7 +11,7 @@ RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y curl gnupg unixodbc-dev git \
   ca-certificates build-essential \
   zlib1g-dev libncurses5-dev libgdbm-dev libssl-dev libreadline-dev libffi-dev wget libbz2-dev libsqlite3-dev \
-  ffmpeg && \
+  ffmpeg libx264-dev && \
   update-ca-certificates && \
   rm -rf /var/lib/apt/lists/*
 
@@ -25,7 +25,6 @@ WORKDIR /app
 
 COPY requirements.txt .
 RUN pip3 install -r requirements.txt
-# RUN pip3 install --upgrade onnx protobuf
 
 COPY . .
 
