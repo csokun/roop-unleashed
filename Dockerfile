@@ -13,6 +13,7 @@ RUN apt-get install -y curl gnupg unixodbc-dev git \
   zlib1g-dev libncurses5-dev libgdbm-dev libssl-dev libreadline-dev libffi-dev wget libbz2-dev libsqlite3-dev \
   ffmpeg libx264-dev && \
   update-ca-certificates && \
+  ln -s libcufft.so.11 libcufft.so.10 && \
   rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /python && cd /python && \
